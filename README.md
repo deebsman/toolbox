@@ -24,3 +24,10 @@ enter toolbox as interactive bash session
 ```
 tb enter
 ```
+help menu
+```
+tb help
+```
+
+## License
+[MIT](https://oss.ninja/mit/deebsman)

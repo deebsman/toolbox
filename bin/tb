@@ -2,37 +2,45 @@
 command="${1}" shift;
 args="${@}"
 toolbox="$(dirname -- "${BASH_SOURCE[0]}")/../"
+help="Usage: tb [commands...]
+Tools:
+  [command] [args] eg: curl google.com
+
+Toolbox:
+  build     Build toolbox container image
+  enter     Exec into container interactively
+  help      This menu
+  list      List all tools available
+  "
 
 function docker_cleanup () {
   docker rm toolbox > /dev/null
 }
 
 function docker_execute () {
-  docker run -v $(pwd):/home/toolbox/host --name toolbox toolbox ${command} ${args}
-  docker_cleanup
-}
-
-function docker_interactive () {
-  docker run -it -v $(pwd):/home/toolbox/host --name toolbox toolbox ${command} ${args}
+  [ "${interactive}" == true ] && interactive="-it"
+  docker run ${interactive} -v $(pwd):/home/toolbox/host --name toolbox toolbox ${command} ${args}
   docker_cleanup
 }
 
 case ${command} in
+  *help)
+    echo "${help}"
+    exit
+    ;;
   build)
     docker build -t toolbox ${toolbox}
     exit
     ;;
   list)
-    command="ls /home/toolbox/go/bin/ && cat /etc/tools"
+    command="bash toollist"
     ;;
   enter)
     command="bash"
-    docker_interactive
-    exit
+    interactive=true
     ;;
   mtr)
-    docker_interactive
-    exit
+    interactive=true
     ;;
 esac
 
