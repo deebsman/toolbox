@@ -1,0 +1,39 @@
+#!/bin/sh
+command="${1}" shift;
+args="${@}"
+toolbox="$(dirname -- "${BASH_SOURCE[0]}")/../"
+
+function docker_cleanup () {
+  docker rm toolbox > /dev/null
+}
+
+function docker_execute () {
+  docker run -v $(pwd):/home/toolbox/host --name toolbox toolbox ${command} ${args}
+  docker_cleanup
+}
+
+function docker_interactive () {
+  docker run -it -v $(pwd):/home/toolbox/host --name toolbox toolbox ${command} ${args}
+  docker_cleanup
+}
+
+case ${command} in
+  build)
+    docker build -t toolbox ${toolbox}
+    exit
+    ;;
+  list)
+    command="ls /home/toolbox/go/bin/ && cat /etc/tools"
+    ;;
+  enter)
+    command="bash"
+    docker_interactive
+    exit
+    ;;
+  mtr)
+    docker_interactive
+    exit
+    ;;
+esac
+
+docker_execute
