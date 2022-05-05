@@ -13,14 +13,9 @@ Toolbox:
   list      List all tools available
   "
 
-function docker_cleanup () {
-  docker rm toolbox > /dev/null
-}
-
 function docker_execute () {
   [ "${interactive}" == true ] && interactive="-it"
-  docker run ${interactive} -v $(pwd):/home/toolbox/host --name toolbox toolbox ${command} ${args}
-  docker_cleanup
+  docker run ${interactive} --rm -v $(pwd):/home/toolbox/host toolbox ${command} ${args}
 }
 
 case ${command} in
@@ -40,6 +35,9 @@ case ${command} in
     interactive=true
     ;;
   mtr)
+    interactive=true
+    ;;
+  sc)
     interactive=true
     ;;
 esac

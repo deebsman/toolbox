@@ -8,6 +8,7 @@ ARG system="\
   ca-certificates\
   sudo\
   exa\
+  busybox-extras\
   "
 ARG tools="\
   curl\
@@ -20,6 +21,10 @@ ARG tools="\
   git\
   go\
   sc\
+  terraform\
+  ansible\
+  packer\
+  mysql-client\
   "
 
 ARG gotools="\
